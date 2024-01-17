@@ -11,7 +11,9 @@ OK, I’m off the soapbox and will get down to solutions. While not a fix by any
 2.	A file dialog will appear, allowing you to select a folder into which the macro will place a folder called “Source” and into that folder, export the code.
 3.	After saving, check that exported files are not empty and are readable with a text editor prior to ditching any previously saved module code. If empty text files are exported, corruption of the intermediate pseudocode is present and code loss is imminent. The previously saved version of the VBA code and Excel file should be retained in case the current one cannot complete the save operation.
 4.	If the workbook save operation completes without error, count yourself lucky and keep working.
+
 If the file does become corrupt, here is the recovery procedure:
+
 1.	Browse to the last successfully saved .xlsm file, change the extension to .zip, and open it in a Windows Explorer file view.
 2.	In the “xl” folder of the opened zip file is a file called “VBAproject.bin”. Delete it.
 3.	Exit the zip file and change the extension back to .xlsm. This will recover the file but at the expense of the VBA code. It must now be reimported.
