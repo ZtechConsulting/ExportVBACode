@@ -1,7 +1,82 @@
 Attribute VB_Name = "Module1"
 Option Explicit
 
-Public Function GetLocalPath(ByVal FullPath As String) As String
+Public Sub ExportVisualBasicCode()
+    Const Module = 1
+    Const ClassModule = 2
+    Const Form = 3
+    Const Document = 100
+    Const Padding = 24
+    
+    Dim VBComponent As Object
+    Dim count As Integer
+    Dim Path As String
+    Dim directory As String
+    Dim extension As String
+    Dim fso As New FileSystemObject
+    
+    'Begin Mods for error described below
+    Dim FolderPicker As FileDialog
+    
+    'Below line causes error due to OneDrive folders are in a web url.
+    'directory = ActiveWorkbook.path & "\VisualBasic"
+        
+    'To fix this, use a Dialog to pick the folder
+    Set FolderPicker = Application.FileDialog(msoFileDialogFolderPicker)
+    Module1.GetLocalPath (Application.ActiveWorkbook.Path) & Application.PathSeparator
+    With FolderPicker
+      .InitialFileName = GetLocalPath(Application.ActiveWorkbook.Path) & Application.PathSeparator
+      .Title = "Select a Folder"
+      .AllowMultiSelect = False
+      If .Show <> -1 Then Exit Sub
+      directory = .SelectedItems(1) & "\Source"
+    End With
+    'End mods
+    
+    count = 0
+    
+    If Not fso.FolderExists(directory) Then
+        Call fso.CreateFolder(directory)
+    End If
+    Set fso = Nothing
+    
+    For Each VBComponent In ActiveWorkbook.VBProject.VBComponents
+        Select Case VBComponent.Type
+            Case ClassModule, Document
+                extension = ".cls"
+            Case Form
+                extension = ".frm"
+            Case Module
+                extension = ".bas"
+            Case Else
+                extension = ".txt"
+        End Select
+            
+                
+        On Error Resume Next
+        Err.Clear
+        
+        Path = directory & Application.PathSeparator & VBComponent.Name & extension
+        Call VBComponent.Export(Path)
+        
+        If Err.Number <> 0 Then
+            Call MsgBox("Failed to export " & VBComponent.Name & " to " & Path, vbCritical)
+        Else
+            count = count + 1
+            Debug.Print "Exported " & Left$(VBComponent.Name & ":" & Space(Padding), Padding) & Path
+        End If
+
+        On Error GoTo 0
+    Next
+    
+    'Not needed and causes annoying warning. Replace with MsgBox Output.
+    'Application.StatusBar = "Successfully exported " & CStr(count) & " VBA files to " & directory
+    'Application.OnTime Now + TimeSerial(0, 0, 10), "ClearStatusBar"
+    MsgBox ("Successfully exported " & CStr(count) & " VBA files to " & directory)
+    
+End Sub
+
+Private Function GetLocalPath(ByVal FullPath As String) As String
     'Finds local path for a OneDrive file URL, using environment variables of OneDrive
     'Reference https://stackoverflow.com/questions/33734706/excels-fullname-property-with-onedrive
     'Authors: Philip Swannell 2019-01-14, MatChrupczalski 2019-05-19, Horoman 2020-03-29, P.G.Schild 2020-04-02
@@ -38,7 +113,7 @@ Public Function GetLocalPath(ByVal FullPath As String) As String
     End If
 End Function
 
-Public Sub mcrImportVBACode()
+Public Sub ImportVBACode()
 
 Dim FilesPicker As FileDialog
 Dim Filename As Variant
@@ -64,7 +139,7 @@ Set FilesPicker = Nothing
 
 End Sub
 
-Public Function SameText(ByVal String1 As String, ByVal String2 As String, ByVal CaseSensitive As Boolean) As Boolean
+Private Function SameText(ByVal String1 As String, ByVal String2 As String, ByVal CaseSensitive As Boolean) As Boolean
 
 String1 = Trim(String1)
 String2 = Trim(String2)
