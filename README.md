@@ -2,6 +2,7 @@
 Code to automatically export VBA modules when a workbook is saved so that they may be recovered if the pseudocode becomes corrupted.
 
 I’ve been burned by the poor implementation of VBA into Excel countless times. It is absolutely shameful that Microsoft has let this problem go on for 10+ years with no real attempt to fix it. It rears its ugly head in many different ways but there is one overriding theme: hundreds of lines of VBA code getting crossed up between multiple bidirectional compilation paths and corrupting itself to the point it prevents saving of the file. I’ve seen at least 100 threads of users reporting erratic behavior of VBA-enabled workbooks resulting in loss of tens of thousands of hours of work which I’m highly confident originated from this problem. (Admittedly, I cannot prove that)
+
 Microsoft has fixed this overriding problem in VB.NET. But Excel will not be put over a .NET core anytime soon, if ever, because to do so basically requires a complete rewrite and shareholders will not tolerate the cash flow impact that many resources committed to old code will have. 
 
 OK, I’m off the soapbox and will get down to solutions. While not a fix by any means, I’ve avoided the worst of this problem by adding this code to the MyWorbook object of the VBA project and use the following workflow when saving the project:
