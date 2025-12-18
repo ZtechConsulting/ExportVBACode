@@ -1,4 +1,15 @@
 <details>
+
+  <summary>Click me</summary>
+
+  | Header 1 | Header 2 |
+  | -------- | -------- |
+  | Row 1    | Row 1    |
+  | Row 2    | Row 2    |
+  
+</details>
+
+<details>
   <summary>Click me</summary>
   
   ### Heading
